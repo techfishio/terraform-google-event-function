@@ -42,6 +42,11 @@ variable "event_trigger" {
   description = "A source that fires events in response to a condition in another service."
 }
 
+variable "trigger_http" {
+  type        = bool
+  description = "Enable triggering the funciton by HTTP request."
+}
+
 variable "labels" {
   type        = map(string)
   default     = {}

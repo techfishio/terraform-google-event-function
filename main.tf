@@ -78,14 +78,19 @@ resource "google_cloudfunctions_function" "main" {
   vpc_connector_egress_settings = var.vpc_connector_egress_settings
   vpc_connector                 = var.vpc_connector
 
-  event_trigger {
-    event_type = var.event_trigger["event_type"]
-    resource   = var.event_trigger["resource"]
+  dynamic "event_trigger" {
+    for_each = lookup(var.event_trigger, "resource", null)[*]
+    content {
+      event_type = var.event_trigger["event_type"]
+      resource   = var.event_trigger["resource"]
 
-    failure_policy {
-      retry = var.event_trigger_failure_policy_retry
+      failure_policy {
+        retry = var.event_trigger_failure_policy_retry
+      }
     }
   }
+
+  trigger_http = var.event_trigger["event_type"] == "http" ? true : null
 
   labels                = var.labels
   runtime               = var.runtime
